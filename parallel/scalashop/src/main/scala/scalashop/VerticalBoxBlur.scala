@@ -45,7 +45,6 @@ object VerticalBoxBlur {
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method
     var height = src.height
-    var width  = src.width
 
     for(x <- from until end){
       for(y <- 0 until height){
@@ -63,7 +62,21 @@ object VerticalBoxBlur {
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
     // TODO implement using the `task` construct and the `blur` method
-    ???
+    var width = src.width
+    var each_len = width / numTasks
+
+    var start = 0
+
+    while (width >= each_len) {
+      task(blur(src, dst, start, start + each_len, radius))
+      start = start + each_len
+      width -= each_len
+    }
+
+    if (width > 0) {
+      task(blur(src, dst, start, start + width, radius))
+    }
+
   }
 
 }

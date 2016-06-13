@@ -43,11 +43,8 @@ object HorizontalBoxBlur {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method
-    var height = src.height
     var width  = src.width
 
-//    for(x <- from until end){
-//      for(y <- 0 until height){
     for(x <- 0 until width){
       for(y <- from until end){
         dst.update(x, y, boxBlurKernel(src, x, y, radius))
@@ -64,7 +61,21 @@ object HorizontalBoxBlur {
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
   // TODO implement using the `task` construct and the `blur` method
 
-  ???
+    var height = src.height
+    var each_len = height / numTasks
+
+    var start = 0
+
+    while(height >= each_len){
+      task(blur(src, dst, start, start + each_len, radius))
+      start = start + each_len
+      height -= each_len
+    }
+
+    if(height > 0){
+      task(blur(src, dst, start, start + height, radius))
+    }
+
   }
 
 }

@@ -51,7 +51,6 @@ package object scalashop {
     var sum_blue = 0
     var sum_alpha = 0
     var total_points = 0
-    var sum_color = 0
 
 
     sum_red += red(c)
@@ -59,7 +58,6 @@ package object scalashop {
     sum_blue += blue(c)
     sum_alpha += alpha(c)
     total_points += 1
-    sum_color += c
 
     if(radius < 1)
       c
@@ -77,8 +75,6 @@ package object scalashop {
             sum_blue += blue(c)
             sum_alpha += alpha(c)
             total_points += 1
-            sum_color += c
-//            println("(" + x1 + "," + y1 + "): " + c)
           }
 
 
@@ -91,8 +87,6 @@ package object scalashop {
             sum_blue += blue(c)
             sum_alpha += alpha(c)
             total_points += 1
-            sum_color += c
-//            println("(" + x1 + "," + y1 + "): " + c)
           }
 
           offset += 1
@@ -112,8 +106,6 @@ package object scalashop {
           sum_blue += blue(c)
           sum_alpha += alpha(c)
           total_points += 1
-          sum_color += c
-//          println("(" + x2 + "," + y2 + "): " + c)
         }
 
         x2 = x
@@ -125,8 +117,6 @@ package object scalashop {
           sum_blue += blue(c)
           sum_alpha += alpha(c)
           total_points += 1
-          sum_color += c
-//          println("(" + x2 + "," + y2 + "): " + c)
         }
 
         r += 1
@@ -140,18 +130,6 @@ package object scalashop {
         (sum_alpha / total_points)
       )
 
-//      println("=====================")
-//      println("x: " + x)
-//      println("y: " + y)
-//      println("width: " + src.width)
-//      println("height: " + src.height)
-//      println("c: " + src.apply(x, y))
-//      println("sum: " + sum_color)
-//      println("radius: " + radius)
-//      println("total: " + total_points)
-//      println("\n\n\n")
-
-      sum_color /total_points
     }
   }
 
