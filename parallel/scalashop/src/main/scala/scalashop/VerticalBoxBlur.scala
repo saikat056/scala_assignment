@@ -3,6 +3,8 @@ package scalashop
 import org.scalameter._
 import common._
 
+import scala.collection.parallel.ForkJoinTasks
+
 object VerticalBoxBlurRunner {
 
   val standardConfig = config(
@@ -68,14 +70,18 @@ object VerticalBoxBlur {
     var start = 0
 
     while (width >= each_len) {
-      task(blur(src, dst, start, start + each_len, radius))
+      ForkJoinTasks[Unit] t = task(blur(src, dst, start, start + each_len, radius))
+//      t.join()
       start = start + each_len
       width -= each_len
     }
 
     if (width > 0) {
-      task(blur(src, dst, start, start + width, radius))
+      var t = task(blur(src, dst, start, start + width, radius))
+//      t.join()
     }
+
+
 
   }
 
