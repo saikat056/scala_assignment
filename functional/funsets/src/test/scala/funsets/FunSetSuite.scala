@@ -124,5 +124,43 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("diff contains the elements of set 's' not present in set 't'") {
+    new TestSets {
+      val u1 = union(s1, s2)
+      val u2 = union(s1, s3)
+      val dif = diff(u1, u2)
+      assert(contains(dif, 2), "Diff 1")
+      assert(!contains(dif, 1), "Diff 2")
+      assert(!contains(dif, 3), "Diff 3")
+    }
+  }
+
+  test("filter contains the elements of set 's' which satisfies predicate 'p'") {
+    new TestSets {
+      val u1 = union(s1, s2)
+      val u2 = union(u1, s3)
+      val filter_even = filter(u2, x =>x%2 == 0)
+      val filter_odd = filter(u2, x =>x%2 == 1)
+      val filter_gt_one = filter(u2, x =>x > 1)
+      val filter_lt_three = filter(u2, x =>x < 3)
+
+      assert(contains(filter_even, 2), "Filter 1")
+      assert(!contains(filter_even, 1), "Filter 2")
+      assert(!contains(filter_even, 3), "Filter 3")
+
+      assert(!contains(filter_odd, 2), "Filter 4")
+      assert(contains(filter_odd, 1), "Filter 5")
+      assert(contains(filter_odd, 3), "Filter 6")
+
+      assert(contains(filter_gt_one, 2), "Filter 7")
+      assert(!contains(filter_gt_one, 1), "Filter 8")
+      assert(contains(filter_gt_one, 3), "Filter 9")
+
+      assert(contains(filter_lt_three, 2), "Filter 10")
+      assert(contains(filter_lt_three, 1), "Filter 11")
+      assert(!contains(filter_lt_three, 3), "Filter 12")
+    }
+  }
+
 
 }
