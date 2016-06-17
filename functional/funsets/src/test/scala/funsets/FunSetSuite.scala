@@ -163,4 +163,42 @@ class FunSetSuite extends FunSuite {
   }
 
 
+  test("forall checks whether the elements of set 's' satisfies predicate 'p'") {
+    new TestSets {
+      val bound = 1000
+      val u1 = union(s1, s2)
+      val u2 = union(u1, s3)
+
+      assert(forall(u2, x => x>=1 && x<=3), "forall 1")
+      assert(!forall(u2, x => x%2==0), "forall 2")
+    }
+  }
+
+
+  test("exists checks whether there is at least one elem in set 's' that satisfies predicate 'p'") {
+    new TestSets {
+      val bound = 1000
+      val u1 = union(s1, s2)
+      val u2 = union(u1, s3)
+
+      assert(exists(u2, x => x>=1 && x<=3), "forall 1")
+      assert(exists(u2, x => x%2==0), "forall 2")
+      assert(!exists(u2, x => x==4), "forall 2")
+    }
+  }
+
+
+  test("map transforms a set 's' by applying `f` to each element of `s`") {
+    new TestSets {
+      val bound = 1000
+      val u1 = union(s1, s2)
+      val u2 = union(u1, s3)
+      val map1 = map(u2, x => x+3)
+
+      assert(contains(map1,4), "map 1")
+      assert(contains(map1,5), "map 2")
+      assert(contains(map1,6), "map 3")
+    }
+  }
+
 }
