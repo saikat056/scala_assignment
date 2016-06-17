@@ -41,7 +41,26 @@ object ParallelParenthesesBalancing {
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
   def balance(chars: Array[Char]): Boolean = {
-    ???
+    var count = 0;
+    var end = chars.length;
+    def bal_with_count(index: Int, count: Int): Int = {
+      if(index < end && count >= 0) {
+        if (chars.charAt(index) == '(')
+          bal_with_count(index + 1, count + 1)
+        else if (chars.charAt(index) == ')')
+          bal_with_count(index + 1, count - 1)
+        else
+          bal_with_count(index + 1, count)
+      }
+      else
+        count
+    }
+
+    count =  bal_with_count(0, count)
+    if(count == 0)
+      true
+    else
+      false
   }
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.

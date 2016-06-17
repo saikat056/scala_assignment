@@ -46,7 +46,20 @@ object ParallelCountChange {
    *  coins for the specified amount of money.
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    ???
+    if(money == 0)
+      1
+    else if (money < 0)
+      0
+    else {
+      var count = 0
+      var coins_collect = coins
+      while (!coins_collect.isEmpty) {
+        count += countChange(money - coins_collect.head, coins_collect)
+        coins_collect = coins_collect.tail: List[Int]
+      }
+      count
+    }
+
   }
 
   type Threshold = (Int, List[Int]) => Boolean
@@ -55,20 +68,57 @@ object ParallelCountChange {
    *  specified list of coins for the specified amount of money.
    */
   def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int = {
-    ???
+    if(money <= 0)
+      0
+    else if(threshold(money, coins))
+      countChange(money, coins)
+    else {
+      val remainCoins: List[Int] = coins.tail: List[Int]
+      if(remainCoins.isEmpty)
+        countChange(money, coins)
+      else {
+        val (c1, c2) = parallel(parCountChange(money - coins.head, coins, threshold),
+          parCountChange(money - remainCoins.head, remainCoins, threshold))
+        c1 + c2
+      }
+    }
   }
 
   /** Threshold heuristic based on the starting money. */
-  def moneyThreshold(startingMoney: Int): Threshold =
-    ???
+  def moneyThreshold(startingMoney: Int): Threshold = {
+    (x, coinList) => {
+      var m = 2 * startingMoney
+      m = m /3
+      if(x <= m)
+        true
+      else
+        false
+    }
+  }
+
 
   /** Threshold heuristic based on the total number of initial coins. */
-  def totalCoinsThreshold(totalCoins: Int): Threshold =
-    ???
+  def totalCoinsThreshold(totalCoins: Int): Threshold = (x, coinList) => {
+    var m = 2 * totalCoins
+    m = m /3
+    var l = coinList.length
+    if (l <= m)
+      true
+    else
+      false
+
+  }
 
 
   /** Threshold heuristic based on the starting money and the initial list of coins. */
   def combinedThreshold(startingMoney: Int, allCoins: List[Int]): Threshold = {
-    ???
+    (x, coinList) => {
+      var m = startingMoney * allCoins.length
+      m = m /2
+      if((x * coinList.length) <= m)
+        true
+      else
+        false
+    }
   }
 }
