@@ -82,7 +82,8 @@ object LineOfSight {
    */
   def upsweep(input: Array[Float], from: Int, end: Int,
     threshold: Int): Tree = {
-    if(input.length <= threshold){
+    val len = end - from + 1
+    if(len <= threshold){
       new Leaf(from, end, upsweepSequential(input, from, end))
     }
     else{
