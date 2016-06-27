@@ -1,5 +1,7 @@
 package scalashop
 
+import java.util
+
 import org.scalameter._
 import common._
 
@@ -68,19 +70,30 @@ object VerticalBoxBlur {
     var each_len = width / numTasks
 
     var start = 0
+    val list: util.LinkedList[java.util.concurrent.ForkJoinTask[Unit]] = new util.LinkedList
 
     while (width >= each_len) {
-      ForkJoinTasks[Unit] t = task(blur(src, dst, start, start + each_len, radius))
-//      t.join()
+
+      list.add(task(blur(src, dst, start, start + each_len, radius)))
+
       start = start + each_len
       width -= each_len
     }
 
     if (width > 0) {
-      var t = task(blur(src, dst, start, start + width, radius))
-//      t.join()
+      list.add(task(blur(src, dst, start, start + width, radius)))
     }
 
+    var iter : util.Iterator[java.util.concurrent.ForkJoinTask[Unit]] = list.iterator()
+
+    var v = 0
+    while (!list.isEmpty) {
+      println("k: " + v)
+      v = v + 1
+      val t : java.util.concurrent.ForkJoinTask[Unit] = list.peek()
+      t.join()
+      list.removeFirst()
+    }
 
 
   }
