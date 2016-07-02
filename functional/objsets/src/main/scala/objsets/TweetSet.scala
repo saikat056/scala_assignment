@@ -76,15 +76,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def descendingByRetweet: TweetList = {
-      if(this.isInstanceOf[Empty])
-        Nil
-      else{
-        var mostRe : Tweet = this.mostRetweeted
-        var s : TweetSet = this.remove(mostRe)
-        new Cons(mostRe, s.descendingByRetweet)
-      }
-    }
+    def descendingByRetweet: TweetList
   
   /**
    * The following methods are already implemented
@@ -120,6 +112,8 @@ class Empty extends TweetSet {
   def union(that: TweetSet): TweetSet = that
 
   def mostRetweeted : Tweet = null
+
+  def descendingByRetweet: TweetList = Nil
   
   /**
    * The following methods are already implemented
@@ -187,6 +181,12 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     s = left.union(s)
     s = right.union(s)
     s
+  }
+
+  def descendingByRetweet: TweetList = {
+      val mostRe : Tweet = this.mostRetweeted
+      val s : TweetSet = this.remove(mostRe)
+      new Cons(mostRe, s.descendingByRetweet)
   }
   /**
    * The following methods are already implemented
@@ -266,7 +266,7 @@ object GoogleVsApple {
    * sorted by the number of retweets.
    */
     lazy val trending: TweetList = {
-      var uniSet: TweetSet = googleTweets.union(appleTweets)
+      val uniSet: TweetSet = googleTweets.union(appleTweets)
       uniSet.descendingByRetweet
     }
   }
