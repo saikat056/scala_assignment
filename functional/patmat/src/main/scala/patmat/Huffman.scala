@@ -24,9 +24,15 @@ object Huffman {
   
 
   // Part 1: Basics
-    def weight(tree: CodeTree): Int = ??? // tree match ...
+    def weight(tree: CodeTree): Int = tree match{
+      case  Leaf(char: Char, weight: Int) => weight
+      case  Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) => this.weight(left) + this.weight(right)
+    }
   
-    def chars(tree: CodeTree): List[Char] = ??? // tree match ...
+    def chars(tree: CodeTree): List[Char] = tree match{
+      case  Leaf(char: Char, weight: Int) => List(char)
+      case  Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) => chars
+    }
   
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -69,7 +75,28 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] = {
+      var list : List[(Char, Int)] =  List[(Char, Int)]()
+      var charList : List[Char] = List[Char]()
+      for (c <- chars){
+          if(!charList.contains(c)){
+            charList = c :: charList
+          }
+      }
+
+
+      for (c <- charList){
+        var count: Int = 0
+        for (elem <- chars){
+          if(elem == c){
+            count = count + 1
+          }
+        }
+        list = (c, count) :: list
+      }
+      list
+
+    }
   
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -78,12 +105,30 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+      var max_c : Char = 'a'
+      var max_count : Int = -1
+      var table : List[(Char, Int)] = freqs
+      var list : List[Leaf] = List[Leaf]()
+      while(!table.isEmpty) {
+        for ((c, count) <- table) {
+          if (count >= max_count) {
+            max_c = c
+            max_count = count
+          }
+        }
+        table = table.filterNot(c => c == (max_c, max_count))
+        list = new Leaf(max_c, max_count) :: list
+        max_c = 'a'
+        max_count = -1
+      }
+      list
+    }
   
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-    def singleton(trees: List[CodeTree]): Boolean = ???
+    def singleton(trees: List[CodeTree]): Boolean = trees.isInstanceOf[Leaf]
   
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -147,7 +192,7 @@ object Huffman {
   /**
    * What does the secret message say? Can you decode it?
    * For the decoding use the `frenchCode' Huffman tree defined above.
-   */
+    **/
   val secret: List[Bit] = List(0,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1)
 
   /**
