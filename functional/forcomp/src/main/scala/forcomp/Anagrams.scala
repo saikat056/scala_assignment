@@ -38,7 +38,7 @@ object Anagrams {
 
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences = {
-    var word : List[Char] = for (word <- s; c <- word) yield c
+    val word : List[Char] = for (word <- s; c <- word) yield c
     word.groupBy(c=>c.toLower).mapValues(_.length).toList.sortBy(_._1)
   }
 
@@ -86,8 +86,36 @@ object Anagrams {
    */
   def lessOccur(occur: Int) : List[Int]  = (for (i <- 1 to occur) yield i).toList
 
+  def recurList(list: List[(Char, Int)], occurrences: Occurrences) : List[Occurrences] = {
+    var occurrenceList : List[Occurrences] = List()
+    if(occurrences.isEmpty)
+      List(list)
+    else
+    {
+      val (c,d) = occurrences.head
+      for(l <- lessOccur(d)) {
+        occurrenceList = occurrenceList ::: recurList(list ::: List((c, l)) , occurrences.tail)
+      }
+      occurrenceList
+    }
+  }
+
   def combinations(occurrences: Occurrences): List[Occurrences] = {
-    var list : List[(Char, Int)] = for ((c,d) <- occurrences; l <- lessOccur(d)) yield (c,l)
+    if(occurrences.isEmpty)
+      List(List())
+    else {
+      var occurrenceList: List[Occurrences] = List(List())
+      val (c, d) = occurrences.head
+      for(l <- lessOccur(d)) {
+        val list: List[Occurrences] = recurList(List((c, l)), occurrences.tail)
+        occurrenceList =  occurrenceList ::: list
+      }
+
+      for ((c,d) <- occurrences; l <- lessOccur(d)){
+        occurrenceList = occurrenceList ::: List(List((c,l)))
+      }
+      occurrenceList
+    }
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
