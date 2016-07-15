@@ -129,7 +129,19 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+
+
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val map1 = x.foldLeft(Map.empty[Char, Int])( (map, value) => map + (value._1 -> value._2) )
+    val map2 = y.foldLeft(map1)( (map, value) =>
+        { val v : Int = map.apply(value._1)
+          if (v == value._2)
+            map - (value._1)
+          else
+            map.updated(value._1, (v - value._2))
+        })
+    map2.toList
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
