@@ -93,6 +93,7 @@ object Anagrams {
     else
     {
       val (c,d) = occurrences.head
+      occurrenceList = occurrenceList ::: recurList(list ::: List() , occurrences.tail)
       for(l <- lessOccur(d)) {
         occurrenceList = occurrenceList ::: recurList(list ::: List((c, l)) , occurrences.tail)
       }
@@ -106,9 +107,9 @@ object Anagrams {
     else {
       var occurrenceList: List[Occurrences] = List(List())
       val (c, d) = occurrences.head
+      occurrenceList = occurrenceList ::: recurList(List() , occurrences.tail)
       for(l <- lessOccur(d)) {
-        val list: List[Occurrences] = recurList(List((c, l)), occurrences.tail)
-        occurrenceList =  occurrenceList ::: list
+        occurrenceList =  occurrenceList ::: recurList(List((c, l)), occurrences.tail)
       }
 
       for ((c,d) <- occurrences; l <- lessOccur(d)){
