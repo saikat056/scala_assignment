@@ -140,7 +140,7 @@ object Anagrams {
           else
             map.updated(value._1, (v - value._2))
         })
-    map2.toList
+    map2.toList.sortBy(_._1)
   }
 
   /** Returns a list of all anagram sentences of the given sentence.
@@ -183,5 +183,59 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def formAnagrams(allAnagrams: List[Sentence], keyOccurList : List[Occurrences],
+                   sentenceOccur: Occurrences) : Set[List[Sentence]] = {
+    if(sentenceOccur.isEmpty)
+      Set(allAnagrams)
+    else {
+      val allSubset: List[Occurrences] = combinations(sentenceOccur)
+      val matchOccurList: List[Occurrences] = keyOccurList.filter(x => allSubset.contains(x))
+
+      if (matchOccurList.isEmpty) {
+        Set()
+      }
+      else {
+
+        var allAnagramSet: Set[List[Sentence]] = Set()
+
+        for (o <- matchOccurList) {
+          val s = formAnagrams(allAnagrams ::: List(dictionaryByOccurrences.apply(o))
+            , keyOccurList, subtract(sentenceOccur, o))
+          allAnagramSet = allAnagramSet.union(s)
+        }
+        allAnagramSet
+      }
+    }
+  }
+
+  def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] =
+    xs.foldLeft(Seq(Seq.empty[A])){
+    (x, y) => for (a <- x.view; b <- y) yield a :+ b }
+
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    if (sentence.isEmpty)
+      List(List())
+    else {
+      val sentenceOccur: Occurrences = sentenceOccurrences(sentence)
+      val keyOccurList: List[Occurrences] = dictionaryByOccurrences.keys.toList
+
+      val allSubset: List[Occurrences] = combinations(sentenceOccur)
+      val matchOccurList: List[Occurrences] = keyOccurList.filter(x => allSubset.contains(x))
+      var allAnagramSet: Set[List[Sentence]] = Set()
+
+      for (o <- matchOccurList) {
+        val s = formAnagrams(List(dictionaryByOccurrences.apply(o))
+          , keyOccurList,subtract(sentenceOccur, o))
+        allAnagramSet = allAnagramSet.union(s)
+      }
+
+      println(allAnagramSet)
+//      var l = allAnagramSet.toList.map( a => List({for(c <-a; d<-c ) yield d}))
+//      var r = l.map(a => {for(c <- a; d <-c) yield d} )
+
+//      combine(Set(Set("a","b","c"), Set("1","2"), Set("S","T"))) foreach (println(_))
+
+      List()
+    }
+  }
 }
