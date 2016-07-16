@@ -210,7 +210,15 @@ object Anagrams {
 
   def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] =
     xs.foldLeft(Seq(Seq.empty[A])){
-    (x, y) => for (a <- x.view; b <- y) yield a :+ b }
+    (x, y) => for (a <- x.view; b <- y) yield a :+ b
+    }
+
+  def cartesian[A](list: List[List[A]]): List[List[A]] = {
+    list match {
+      case Nil => List(List())
+      case h :: t => h.flatMap(i => cartesian(t).map(i :: _))
+    }
+  }
 
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
     if (sentence.isEmpty)
@@ -233,9 +241,14 @@ object Anagrams {
 //      var l = allAnagramSet.toList.map( a => List({for(c <-a; d<-c ) yield d}))
 //      var r = l.map(a => {for(c <- a; d <-c) yield d} )
 
-//      combine(Set(Set("a","b","c"), Set("1","2"), Set("S","T"))) foreach (println(_))
+//      combine(List(List("a","b","c"), List("1","2"), List("S","T"))) foreach (println(_))
+//      var l : Seq[Seq[Word]] = List()
+//      for(s<-allAnagramSet) { combine(s)}
+//      println(l)
 
-      List()
+      var l:List[List[Word]] = List()
+      for(s<-allAnagramSet) { l = l ::: cartesian(s)}
+      l
     }
   }
 }
